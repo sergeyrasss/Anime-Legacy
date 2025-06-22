@@ -3,198 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MangaWorld | Читайте лучшую мангу</title>
+    <title>MangaOcean - Читайте мангу онлайн</title>
     <style>
-        /* Яркие анимации и стили */
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #fff;
-            overflow-x: hidden;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
         }
         
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        header {
             text-align: center;
-            background: url('https://i.imgur.com/JYw6f5E.jpg') no-repeat center center/cover;
-            position: relative;
-        }
-        
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            padding: 20px 0;
+            border-bottom: 2px solid #3498db;
+            margin-bottom: 30px;
         }
         
         h1 {
-            font-size: 4rem;
-            margin: 0;
-            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+            color: #2c3e50;
+            margin-bottom: 10px;
         }
         
-        .tagline {
-            font-size: 1.5rem;
-            margin: 20px 0;
-            color: #e0e0e0;
+        .manga-list {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            margin: 20px 10px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .manga-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
         }
         
-        .btn-primary {
-            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
-            color: #fff;
-            box-shadow: 0 5px 15px rgba(249, 203, 40, 0.4);
+        .manga-item:hover {
+            background-color: #f9f9f9;
         }
         
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(249, 203, 40, 0.6);
+        .manga-title {
+            font-size: 1.2em;
+            color: #3498db;
+            margin-bottom: 5px;
         }
         
-        .btn-secondary {
-            border: 2px solid #f9cb28;
-            color: #f9cb28;
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(249, 203, 40, 0.1);
-        }
-        
-        .features {
-            padding: 80px 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .feature-card {
-            width: 300px;
-            margin: 20px;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(5px);
-            transition: transform 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.15);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #f9cb28;
+        .manga-author {
+            font-style: italic;
+            color: #7f8c8d;
         }
         
         footer {
             text-align: center;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-        
-        /* Анимация для фона */
-        @keyframes bgPulse {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        body {
-            animation: bgPulse 15s ease infinite;
-            background-size: 200% 200%;
+            margin-top: 30px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
-    <section class="hero">
-        <div class="hero-content">
-            <h1>MANGAWORLD</h1>
-            <p class="tagline">Окунитесь в мир захватывающих историй и незабываемых приключений</p>
-            <div class="buttons">
-                <a href="#library" class="btn btn-primary">Начать чтение</a>
-                <a href="#features" class="btn btn-secondary">Узнать больше</a>
-            </div>
-        </div>
-    </section>
+    <header>
+        <h1>MangaOcean</h1>
+        <p>Читайте лучшую мангу онлайн бесплатно</p>
+    </header>
     
-    <section id="features" class="features">
-        <div class="feature-card">
-            <div class="feature-icon">📚</div>
-            <h3>Огромная библиотека</h3>
-            <p>Тысячи томов манги на любой вкус - от классики до новинок</p>
+    <main class="manga-list">
+        <div class="manga-item">
+            <div class="manga-title">Дети</div>
+            <div class="manga-author">Автор: Такано Ая</div>
         </div>
         
-        <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3>Быстрая загрузка</h3>
-            <p>Мгновенный доступ к главам без долгого ожидания</p>
+        <div class="manga-item">
+            <div class="manga-title">Семья</div>
+            <div class="manga-author">Автор: Хагивара Кадзуси</div>
         </div>
         
-        <div class="feature-card">
-            <div class="feature-icon">💖</div>
-            <h3>Для истинных ценителей</h3>
-            <p>Высокое качество сканов и профессиональный перевод</p>
+        <div class="manga-item">
+            <div class="manga-title">Сиундзи</div>
+            <div class="manga-author">Автор: Урасава Наоки</div>
         </div>
-    </section>
-    
-    <section id="library" style="padding: 60px 20px; text-align: center;">
-        <h2 style="font-size: 2.5rem; margin-bottom: 40px;">Популярная манга</h2>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
-            <div style="width: 200px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; transition: transform 0.3s ease;">
-                <img src="https://i.imgur.com/5QW2fW5.jpg" alt="Манга 1" style="width: 100%; height: 280px; object-fit: cover;">
-                <div style="padding: 15px;">
-                    <h4 style="margin: 0;">Берсерк</h4>
-                    <p style="color: #aaa; font-size: 0.9rem;">Том 1</p>
-                </div>
-            </div>
-            <!-- Добавьте больше карточек с мангой по аналогии -->
+        
+        <div class="manga-item">
+            <div class="manga-title">Необъятный океан</div>
+            <div class="manga-author">Автор: Ито Дзюндзи</div>
         </div>
-    </section>
+    </main>
     
     <footer>
-        <p>© 2023 MangaWorld. Все права на мангу принадлежат их авторам.</p>
-        <p>Сайт предназначен только для ознакомления.</p>
+        <p>© 2023 MangaOcean. Все права на мангу принадлежат их авторам.</p>
+        <p>Сайт создан для ознакомительных целей.</p>
     </footer>
 </body>
 </html>
