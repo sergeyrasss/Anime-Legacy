@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangaWorld | Читайте лучшую мангу</title>
+    <style>
+        /* Яркие анимации и стили */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: url('https://i.imgur.com/JYw6f5E.jpg') no-repeat center center/cover;
+            position: relative;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            color: #e0e0e0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 20px 10px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(249, 203, 40, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(249, 203, 40, 0.6);
+        }
+        
+        .btn-secondary {
+            border: 2px solid #f9cb28;
+            color: #f9cb28;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(249, 203, 40, 0.1);
+        }
+        
+        .features {
+            padding: 80px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .feature-card {
+            width: 300px;
+            margin: 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #f9cb28;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* Анимация для фона */
+        @keyframes bgPulse {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        body {
+            animation: bgPulse 15s ease infinite;
+            background-size: 200% 200%;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>MANGAWORLD</h1>
+            <p class="tagline">Окунитесь в мир захватывающих историй и незабываемых приключений</p>
+            <div class="buttons">
+                <a href="#library" class="btn btn-primary">Начать чтение</a>
+                <a href="#features" class="btn btn-secondary">Узнать больше</a>
+            </div>
+        </div>
+    </section>
+    
+    <section id="features" class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>Огромная библиотека</h3>
+            <p>Тысячи томов манги на любой вкус - от классики до новинок</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Быстрая загрузка</h3>
+            <p>Мгновенный доступ к главам без долгого ожидания</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">💖</div>
+            <h3>Для истинных ценителей</h3>
+            <p>Высокое качество сканов и профессиональный перевод</p>
+        </div>
+    </section>
+    
+    <section id="library" style="padding: 60px 20px; text-align: center;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 40px;">Популярная манга</h2>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+            <div style="width: 200px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; transition: transform 0.3s ease;">
+                <img src="https://i.imgur.com/5QW2fW5.jpg" alt="Манга 1" style="width: 100%; height: 280px; object-fit: cover;">
+                <div style="padding: 15px;">
+                    <h4 style="margin: 0;">Берсерк</h4>
+                    <p style="color: #aaa; font-size: 0.9rem;">Том 1</p>
+                </div>
+            </div>
+            <!-- Добавьте больше карточек с мангой по аналогии -->
+        </div>
+    </section>
+    
+    <footer>
+        <p>© 2023 MangaWorld. Все права на мангу принадлежат их авторам.</p>
+        <p>Сайт предназначен только для ознакомления.</p>
+    </footer>
+</body>
+</html>
