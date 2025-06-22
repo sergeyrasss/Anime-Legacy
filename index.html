@@ -3,98 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MangaOcean - Читайте мангу онлайн</title>
+    <title>MangaOcean — Читайте лучшую мангу онлайн бесплатно</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        header {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             text-align: center;
-            padding: 20px 0;
-            border-bottom: 2px solid #3498db;
-            margin-bottom: 30px;
+            overflow: hidden;
         }
-        
         h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+            font-size: 3em;
+            margin-bottom: 0.5em;
+            text-shadow: 0 0 5px #0f0;
         }
-        
-        .manga-list {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        p {
+            font-size: 1.5em;
+            margin-bottom: 2em;
+            text-shadow: 0 0 3px #0f0;
         }
-        
-        .manga-item {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.3s;
+        .cover-image {
+            width: 300px;
+            height: 400px;
+            object-fit: cover;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 10px #0f0;
+            margin-bottom: 2em;
         }
-        
-        .manga-item:hover {
-            background-color: #f9f9f9;
-        }
-        
-        .manga-title {
+        .read-button {
+            background-color: #000;
+            color: #0f0;
+            border: 2px solid #0f0;
+            padding: 10px 30px;
             font-size: 1.2em;
-            color: #3498db;
-            margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            box-shadow: 0 0 5px #0f0;
         }
-        
-        .manga-author {
-            font-style: italic;
-            color: #7f8c8d;
+        .read-button:hover {
+            background-color: #0f0;
+            color: #000;
+            box-shadow: 0 0 15px #0f0;
         }
-        
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: #7f8c8d;
-            font-size: 0.9em;
+        .blink {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>MangaOcean</h1>
-        <p>Читайте лучшую мангу онлайн бесплатно</p>
-    </header>
-    
-    <main class="manga-list">
-        <div class="manga-item">
-            <div class="manga-title">Дети</div>
-            <div class="manga-author">Автор: Такано Ая</div>
-        </div>
-        
-        <div class="manga-item">
-            <div class="manga-title">Семья</div>
-            <div class="manga-author">Автор: Хагивара Кадзуси</div>
-        </div>
-        
-        <div class="manga-item">
-            <div class="manga-title">Сиундзи</div>
-            <div class="manga-author">Автор: Урасава Наоки</div>
-        </div>
-        
-        <div class="manga-item">
-            <div class="manga-title">Необъятный океан</div>
-            <div class="manga-author">Автор: Ито Дзюндзи</div>
-        </div>
-    </main>
-    
-    <footer>
-        <p>© 2023 MangaOcean. Все права на мангу принадлежат их авторам.</p>
-        <p>Сайт создан для ознакомительных целей.</p>
-    </footer>
+    <h1>Manga<span class="blink">Ocean</span></h1>
+    <p>Читайте лучшую мангу онлайн бесплатно</p>
+    <img src="https://static.desu.city/data/manga/covers/preview/825.jpg?1654158602" alt="Обложка манги" class="cover-image">
+    <a href="chapters.html" class="read-button">Читать</a>
 </body>
 </html>
