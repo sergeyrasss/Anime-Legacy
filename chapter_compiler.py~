@@ -136,7 +136,6 @@ def generate_html(chapter_num, image_urls, all_chapters):
             <option value="">Выберите главу...</option>
             {''.join(options)}
         </select>
-        <a href="index.html" class="home-button">НА ГЛАВНУЮ</a>
     </div>
 </body>
 </html>"""
