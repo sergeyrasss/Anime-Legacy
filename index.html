@@ -1,228 +1,222 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Плеер 5x для iOS 6</title>
+    <title>Видео для iOS 6</title>
     <style>
-        body {
-            font-family: Helvetica, Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 10px;
-            background: #f0f0f0;
+            padding: 0;
+            box-sizing: border-box;
             -webkit-text-size-adjust: 100%;
         }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.5;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
         .player-container {
-            position: relative;
-            margin: 10px 0;
             background: #000;
-            border-radius: 3px;
+            border-radius: 8px;
             overflow: hidden;
-        }
-        #videoContainer {
+            margin: 20px 0;
             position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; /* 16:9 */
         }
-        #videoPlayer, #hiddenPlayer {
+        .player-container::before {
+            content: "";
+            display: block;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        .player {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        #hiddenPlayer {
-            opacity: 0;
-            z-index: -1;
-        }
-        .controls {
-            margin: 15px 0;
-            padding: 10px;
-            background: #fff;
-            border-radius: 3px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        .speed-control {
-            display: table;
+        .modern-player, .legacy-player {
             width: 100%;
-            margin: 10px 0;
+            height: 100%;
         }
-        .speed-btn {
-            display: table-cell;
-            width: 40px;
-            height: 40px;
-            background: #4a6baf;
+        .legacy-player {
+            display: none;
+        }
+        .download-section {
+            text-align: center;
+            margin: 25px 0;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #3498db;
             color: white;
-            text-align: center;
-            vertical-align: middle;
-            font-size: 20px;
+            text-decoration: none;
+            border-radius: 5px;
             font-weight: bold;
-            border-radius: 3px;
+            transition: background 0.3s;
         }
-        .speed-display {
-            display: table-cell;
+        .download-btn:hover {
+            background: #2980b9;
+        }
+        .warning {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
             text-align: center;
-            vertical-align: middle;
+            display: none;
+        }
+        .video-list {
+            margin-top: 30px;
+        }
+        .video-item {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .video-title {
             font-weight: bold;
-            font-size: 16px;
+            margin-bottom: 10px;
         }
-        input[type="range"] {
-            width: 100%;
-            margin: 15px 0;
-            -webkit-appearance: none;
-            height: 8px;
-            background: #ddd;
-            border-radius: 4px;
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 14px;
         }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #4a6baf;
-            border-radius: 50%;
+        
+        /* iOS 6 specific */
+        .ios6 .warning {
+            display: block;
+        }
+        .ios6 .modern-player {
+            display: none;
+        }
+        .ios6 .legacy-player {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <h1>Ускоренный плеер (до 5x)</h1>
-    
-    <div class="player-container">
-        <div id="videoContainer">
-            <!-- Видимый видеоплеер (только изображение) -->
-            <video id="videoPlayer" webkit-playsinline playsinline></video>
-            
-            <!-- Скрытый плеер для аудио с максимальной скоростью -->
-            <video id="hiddenPlayer" webkit-playsinline></video>
-        </div>
-    </div>
-    
-    <div class="controls">
-        <div class="speed-control">
-            <div id="decreaseSpeed" class="speed-btn">-</div>
-            <div class="speed-display"><span id="currentSpeed">1.0x</span></div>
-            <div id="increaseSpeed" class="speed-btn">+</div>
-        </div>
-        <input type="range" id="speedRange" min="0.5" max="5" step="0.1" value="1">
+    <header>
+        <h1>Видео для iOS 6</h1>
+        <p>Специально оптимизированные видеофайлы</p>
+    </header>
+
+    <div class="warning">
+        ⚠️ Ваше устройство использует iOS 6. Для воспроизведения видео может потребоваться
+        <a href="https://support.apple.com/downloads/quicktime" target="_blank">QuickTime Player</a>.
     </div>
 
+    <div class="player-container">
+        <div class="player">
+            <!-- Современный плеер -->
+            <video class="modern-player" controls playsinline>
+                <source src="video.mp4" type="video/mp4">
+                Ваш браузер не поддерживает HTML5 видео.
+            </video>
+            
+            <!-- Плеер для iOS 6 -->
+            <object class="legacy-player" width="100%" height="100%"
+                classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
+                codebase="http://www.apple.com/qtactivex/qtplugin.cab">
+                <param name="src" value="video.mp4">
+                <param name="autoplay" value="false">
+                <param name="controller" value="true">
+                <param name="scale" value="aspect">
+                <embed src="video.mp4" width="100%" height="100%"
+                    autoplay="false" controller="true" scale="aspect"
+                    pluginspage="http://www.apple.com/quicktime/download/">
+            </object>
+        </div>
+    </div>
+
+    <div class="download-section">
+        <a href="video.mp4" class="download-btn">Скачать видео</a>
+    </div>
+
+    <div class="video-list">
+        <h2>Другие видео</h2>
+        <!-- JavaScript добавит список видео здесь -->
+    </div>
+
+    <footer>
+        <p>Оптимизировано для iOS 6 и современных устройств</p>
+    </footer>
+
     <script>
-        // Конфигурация
-        var videoUrl = 'video.mp4';
-        var maxIOS6Speed = 2.0; // Максимальная скорость для iOS 6
-        var targetSpeed = 1.0;
+        // Определяем iOS 6
         var isIOS6 = /iP(hone|od|ad).*OS 6_/.test(navigator.userAgent);
         
-        // Элементы
-        var videoPlayer = document.getElementById('videoPlayer');
-        var hiddenPlayer = document.getElementById('hiddenPlayer');
-        var currentSpeed = document.getElementById('currentSpeed');
-        var speedRange = document.getElementById('speedRange');
-        
-        // Инициализация плееров
-        function initPlayers() {
-            // Основной плеер (только видео)
-            videoPlayer.src = videoUrl;
-            videoPlayer.controls = false;
-            videoPlayer.loop = true;
+        // Добавляем класс для iOS 6
+        if (isIOS6) {
+            document.body.classList.add('ios6');
+            console.log("iOS 6 detected");
             
-            // Скрытый плеер (аудио + максимальная скорость)
-            hiddenPlayer.src = videoUrl;
-            hiddenPlayer.volume = 1.0;
-            
-            // Синхронизация состояния
-            videoPlayer.addEventListener('play', function() {
-                hiddenPlayer.play().catch(e => console.log(e));
-            });
-            
-            videoPlayer.addEventListener('pause', function() {
-                hiddenPlayer.pause();
-            });
-            
-            videoPlayer.addEventListener('seeked', function() {
-                hiddenPlayer.currentTime = videoPlayer.currentTime;
-            });
+            // Автозапуск для iOS 6
+            setTimeout(function() {
+                var embeds = document.getElementsByTagName('embed');
+                for (var i = 0; i < embeds.length; i++) {
+                    embeds[i].src = embeds[i].src + "?autoplay=1";
+                }
+            }, 1000);
         }
         
-        // Установка скорости
-        function setPlaybackRate(rate) {
-            targetSpeed = parseFloat(rate);
-            updateSpeedDisplay();
+        // Получаем список видео для страницы
+        function loadVideoList() {
+            var videoList = [];
             
-            if(isIOS6) {
-                // Для iOS 6 используем комбинацию скрытого плеера и визуального ускорения
-                var visualRate = Math.min(maxIOS6Speed, targetSpeed);
-                var audioRate = targetSpeed / visualRate;
-                
-                videoPlayer.playbackRate = visualRate;
-                hiddenPlayer.playbackRate = audioRate;
-                
-                // Ускорение визуального воспроизведения через интервалы
-                if(targetSpeed > maxIOS6Speed) {
-                    startFrameAcceleration(visualRate);
-                } else {
-                    stopFrameAcceleration();
-                }
-            } else {
-                videoPlayer.playbackRate = targetSpeed;
-                hiddenPlayer.playbackRate = 1;
+            // Попробуем получить список видео из папки
+            try {
+                // В GitHub Pages можно использовать API для получения списка файлов
+                // Но для простоты укажем видео вручную
+                videoList = [
+                    { name: "Видео 1", file: "video1.mp4" },
+                    { name: "Видео 2", file: "video2.mp4" },
+                    { name: "Видео 3", file: "video3.mp4" }
+                ];
+            } catch (e) {
+                console.error("Error loading video list:", e);
+            }
+            
+            // Добавляем видео на страницу
+            var container = document.querySelector('.video-list');
+            if (videoList.length > 0) {
+                var html = '';
+                videoList.forEach(function(video) {
+                    html += `
+                    <div class="video-item">
+                        <div class="video-title">${video.name}</div>
+                        <a href="${video.file}" class="download-btn" style="display:block; margin-top:10px; text-align:center;">Скачать</a>
+                    </div>
+                    `;
+                });
+                container.innerHTML += html;
             }
         }
         
-        // Переменные для ускорения кадров
-        var accelerationInterval;
-        var lastUpdate = 0;
-        var frameStep = 0;
-        
-        function startFrameAcceleration(visualRate) {
-            stopFrameAcceleration();
-            var frameTime = 1000 / 30; // 30 fps
-            
-            accelerationInterval = setInterval(function() {
-                var now = Date.now();
-                if(now - lastUpdate >= frameTime) {
-                    frameStep = (frameStep + 1) % 4;
-                    if(frameStep === 0) {
-                        videoPlayer.currentTime += 0.1 * visualRate;
-                    }
-                    lastUpdate = now;
-                }
-            }, frameTime / 4);
-        }
-        
-        function stopFrameAcceleration() {
-            if(accelerationInterval) {
-                clearInterval(accelerationInterval);
-                accelerationInterval = null;
-            }
-        }
-        
-        function updateSpeedDisplay() {
-            currentSpeed.innerHTML = targetSpeed.toFixed(1) + 'x';
-            speedRange.value = targetSpeed;
-        }
-        
-        // Обработчики событий
-        speedRange.addEventListener('input', function() {
-            setPlaybackRate(this.value);
-        });
-        
-        document.getElementById('increaseSpeed').addEventListener('click', function() {
-            setPlaybackRate(targetSpeed + 0.1);
-        });
-        
-        document.getElementById('decreaseSpeed').addEventListener('click', function() {
-            setPlaybackRate(Math.max(0.5, targetSpeed - 0.1));
-        });
-        
-        // Запуск при загрузке
-        initPlayers();
-        
-        // Автовоспроизведение при касании (для iOS)
-        document.body.addEventListener('touchend', function initPlay() {
-            videoPlayer.play().catch(e => console.log(e));
-            document.body.removeEventListener('touchend', initPlay);
-        }, {once: true});
+        // Загружаем список видео при загрузке страницы
+        window.addEventListener('DOMContentLoaded', loadVideoList);
     </script>
 </body>
 </html>
