@@ -2,184 +2,227 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Видеоплеер с регулировкой скорости</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Плеер 5x для iOS 6</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-            background-color: #f5f5f5;
+            font-family: Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background: #f0f0f0;
+            -webkit-text-size-adjust: 100%;
         }
         .player-container {
-            margin: 30px 0;
+            position: relative;
+            margin: 10px 0;
             background: #000;
-            border-radius: 8px;
+            border-radius: 3px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        video {
+        #videoContainer {
+            position: relative;
             width: 100%;
-            max-height: 500px;
-            outline: none;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 */
+        }
+        #videoPlayer, #hiddenPlayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #hiddenPlayer {
+            opacity: 0;
+            z-index: -1;
         }
         .controls {
-            margin: 20px 0;
-            padding: 15px;
+            margin: 15px 0;
+            padding: 10px;
             background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
         .speed-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin: 15px 0;
+            display: table;
+            width: 100%;
+            margin: 10px 0;
         }
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-            background: #4285f4;
+        .speed-btn {
+            display: table-cell;
+            width: 40px;
+            height: 40px;
+            background: #4a6baf;
             color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: background 0.3s;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 3px;
         }
-        button:hover {
-            background: #3367d6;
+        .speed-display {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            font-size: 16px;
         }
         input[type="range"] {
-            width: 300px;
-            height: 8px;
+            width: 100%;
+            margin: 15px 0;
             -webkit-appearance: none;
+            height: 8px;
             background: #ddd;
             border-radius: 4px;
-            outline: none;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 20px;
             height: 20px;
-            background: #4285f4;
+            background: #4a6baf;
             border-radius: 50%;
-            cursor: pointer;
-        }
-        .current-speed {
-            font-weight: bold;
-            min-width: 50px;
-            display: inline-block;
-            font-size: 18px;
-        }
-        .format-warning {
-            color: #d32f2f;
-            margin-top: 10px;
-            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <h1>Видеоплеер с регулировкой скорости</h1>
+    <h1>Ускоренный плеер (до 5x)</h1>
     
     <div class="player-container">
-        <video id="videoPlayer" controls>
-            <!-- Поддерживаемые форматы в порядке приоритета -->
-            <source src="video.mkv" type="video/x-matroska">
-            <source src="video.mp4" type="video/mp4">
-            <source src="video.webm" type="video/webm">
-            Ваш браузер не поддерживает ни один из доступных форматов видео.
-        </video>
+        <div id="videoContainer">
+            <!-- Видимый видеоплеер (только изображение) -->
+            <video id="videoPlayer" webkit-playsinline playsinline></video>
+            
+            <!-- Скрытый плеер для аудио с максимальной скоростью -->
+            <video id="hiddenPlayer" webkit-playsinline></video>
+        </div>
     </div>
     
     <div class="controls">
         <div class="speed-control">
-            <button id="decreaseSpeed">-</button>
-            <span class="current-speed" id="currentSpeed">1x</span>
-            <button id="increaseSpeed">+</button>
+            <div id="decreaseSpeed" class="speed-btn">-</div>
+            <div class="speed-display"><span id="currentSpeed">1.0x</span></div>
+            <div id="increaseSpeed" class="speed-btn">+</div>
         </div>
-        <input type="range" id="speedRange" min="0.1" max="10" step="0.1" value="1">
-        <div id="formatWarning" class="format-warning"></div>
+        <input type="range" id="speedRange" min="0.5" max="5" step="0.1" value="1">
     </div>
 
     <script>
-        const video = document.getElementById('videoPlayer');
-        const currentSpeed = document.getElementById('currentSpeed');
-        const speedRange = document.getElementById('speedRange');
-        const increaseBtn = document.getElementById('increaseSpeed');
-        const decreaseBtn = document.getElementById('decreaseSpeed');
-        const formatWarning = document.getElementById('formatWarning');
+        // Конфигурация
+        var videoUrl = 'video.mp4';
+        var maxIOS6Speed = 2.0; // Максимальная скорость для iOS 6
+        var targetSpeed = 1.0;
+        var isIOS6 = /iP(hone|od|ad).*OS 6_/.test(navigator.userAgent);
         
-        // Проверка поддержки формата
-        video.addEventListener('error', function() {
-            if (video.error && video.error.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-                formatWarning.textContent = 'Ваш браузер может не поддерживать формат MKV. Попробуйте использовать MP4 или WebM.';
-            }
-        });
+        // Элементы
+        var videoPlayer = document.getElementById('videoPlayer');
+        var hiddenPlayer = document.getElementById('hiddenPlayer');
+        var currentSpeed = document.getElementById('currentSpeed');
+        var speedRange = document.getElementById('speedRange');
         
-        // Установка начальной скорости
-        video.playbackRate = 1;
-        
-        // Обновление отображения скорости
-        function updateSpeedDisplay() {
-            const speed = video.playbackRate;
-            currentSpeed.textContent = speed.toFixed(1) + 'x';
-            speedRange.value = speed;
+        // Инициализация плееров
+        function initPlayers() {
+            // Основной плеер (только видео)
+            videoPlayer.src = videoUrl;
+            videoPlayer.controls = false;
+            videoPlayer.loop = true;
             
-            // Изменение цвета при экстремальных скоростях
-            if (speed > 3 || speed < 0.5) {
-                currentSpeed.style.color = '#d32f2f';
+            // Скрытый плеер (аудио + максимальная скорость)
+            hiddenPlayer.src = videoUrl;
+            hiddenPlayer.volume = 1.0;
+            
+            // Синхронизация состояния
+            videoPlayer.addEventListener('play', function() {
+                hiddenPlayer.play().catch(e => console.log(e));
+            });
+            
+            videoPlayer.addEventListener('pause', function() {
+                hiddenPlayer.pause();
+            });
+            
+            videoPlayer.addEventListener('seeked', function() {
+                hiddenPlayer.currentTime = videoPlayer.currentTime;
+            });
+        }
+        
+        // Установка скорости
+        function setPlaybackRate(rate) {
+            targetSpeed = parseFloat(rate);
+            updateSpeedDisplay();
+            
+            if(isIOS6) {
+                // Для iOS 6 используем комбинацию скрытого плеера и визуального ускорения
+                var visualRate = Math.min(maxIOS6Speed, targetSpeed);
+                var audioRate = targetSpeed / visualRate;
+                
+                videoPlayer.playbackRate = visualRate;
+                hiddenPlayer.playbackRate = audioRate;
+                
+                // Ускорение визуального воспроизведения через интервалы
+                if(targetSpeed > maxIOS6Speed) {
+                    startFrameAcceleration(visualRate);
+                } else {
+                    stopFrameAcceleration();
+                }
             } else {
-                currentSpeed.style.color = '#000';
+                videoPlayer.playbackRate = targetSpeed;
+                hiddenPlayer.playbackRate = 1;
             }
+        }
+        
+        // Переменные для ускорения кадров
+        var accelerationInterval;
+        var lastUpdate = 0;
+        var frameStep = 0;
+        
+        function startFrameAcceleration(visualRate) {
+            stopFrameAcceleration();
+            var frameTime = 1000 / 30; // 30 fps
+            
+            accelerationInterval = setInterval(function() {
+                var now = Date.now();
+                if(now - lastUpdate >= frameTime) {
+                    frameStep = (frameStep + 1) % 4;
+                    if(frameStep === 0) {
+                        videoPlayer.currentTime += 0.1 * visualRate;
+                    }
+                    lastUpdate = now;
+                }
+            }, frameTime / 4);
+        }
+        
+        function stopFrameAcceleration() {
+            if(accelerationInterval) {
+                clearInterval(accelerationInterval);
+                accelerationInterval = null;
+            }
+        }
+        
+        function updateSpeedDisplay() {
+            currentSpeed.innerHTML = targetSpeed.toFixed(1) + 'x';
+            speedRange.value = targetSpeed;
         }
         
         // Обработчики событий
         speedRange.addEventListener('input', function() {
-            video.playbackRate = parseFloat(this.value);
-            updateSpeedDisplay();
+            setPlaybackRate(this.value);
         });
         
-        increaseBtn.addEventListener('click', function() {
-            if (video.playbackRate < 10) {
-                video.playbackRate += 0.1;
-                updateSpeedDisplay();
-            }
+        document.getElementById('increaseSpeed').addEventListener('click', function() {
+            setPlaybackRate(targetSpeed + 0.1);
         });
         
-        decreaseBtn.addEventListener('click', function() {
-            if (video.playbackRate > 0.1) {
-                video.playbackRate -= 0.1;
-                updateSpeedDisplay();
-            }
+        document.getElementById('decreaseSpeed').addEventListener('click', function() {
+            setPlaybackRate(Math.max(0.5, targetSpeed - 0.1));
         });
         
-        // Быстрые клавиши
-        document.addEventListener('keydown', function(e) {
-            if (e.target.tagName === 'INPUT') return;
-            
-            if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
-                if (video.playbackRate < 10) {
-                    video.playbackRate += 0.1;
-                    updateSpeedDisplay();
-                }
-                e.preventDefault();
-            } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
-                if (video.playbackRate > 0.1) {
-                    video.playbackRate -= 0.1;
-                    updateSpeedDisplay();
-                }
-                e.preventDefault();
-            }
-        });
+        // Запуск при загрузке
+        initPlayers();
         
-        // Обновление при изменении скорости другими способами
-        video.addEventListener('ratechange', updateSpeedDisplay);
-        
-        // Инициализация
-        updateSpeedDisplay();
+        // Автовоспроизведение при касании (для iOS)
+        document.body.addEventListener('touchend', function initPlay() {
+            videoPlayer.play().catch(e => console.log(e));
+            document.body.removeEventListener('touchend', initPlay);
+        }, {once: true});
     </script>
 </body>
 </html>
