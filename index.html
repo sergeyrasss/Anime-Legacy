@@ -171,6 +171,7 @@
         var frameSkipRate = 0;
         var frameSkipCounter = 0;
         var lastUpdate = 0;
+        var skipInterval = null;
         
         // Функция для установки скорости
         function setPlaybackRate(rate) {
@@ -189,34 +190,36 @@
             
             // На iOS 6 используем кастомное ускорение для скоростей выше 2x
             if (isIOS6 && targetSpeed > 2.0) {
+                // Устанавливаем базовую скорость 2x
                 video.playbackRate = 2.0;
-                frameSkipRate = targetSpeed / 2.0 - 1;
-                frameSkipCounter = 0;
-                startFrameSkipping();
-            } else {
-                video.playbackRate = targetSpeed;
-                frameSkipRate = 0;
-            }
-        }
-        
-        // Функция для пропуска кадров (имитация ускорения)
-        function startFrameSkipping() {
-            if (frameSkipRate <= 0) return;
-            
-            var now = Date.now();
-            if (now - lastUpdate > 40) {
-                frameSkipCounter++;
                 
-                if (frameSkipCounter >= frameSkipRate) {
-                    video.currentTime += 0.1;
-                    frameSkipCounter = 0;
+                // Очищаем предыдущий интервал
+                if (skipInterval) {
+                    clearInterval(skipInterval);
+                    skipInterval = null;
                 }
                 
-                lastUpdate = now;
-            }
-            
-            if (targetSpeed > 2.0 && !video.paused) {
-                requestAnimationFrame(startFrameSkipping);
+                // Рассчитываем параметры FrameSkip
+                var skipRatio = targetSpeed / 2.0 - 1;
+                var skipIntervalTime = 100; // Интервал в мс
+                
+                // Создаем новый интервал для пропуска кадров
+                skipInterval = setInterval(function() {
+                    if (!video.paused) {
+                        // Пропускаем кадры пропорционально требуемой скорости
+                        video.currentTime += (skipRatio * skipIntervalTime / 1000);
+                    }
+                }, skipIntervalTime);
+                
+            } else {
+                // Для нормальных браузеров и скоростей <=2x
+                video.playbackRate = targetSpeed;
+                
+                // Очищаем интервал FrameSkip, если он был
+                if (skipInterval) {
+                    clearInterval(skipInterval);
+                    skipInterval = null;
+                }
             }
         }
         
@@ -253,6 +256,21 @@
             document.body.removeEventListener('touchend', initPlay);
         }, {once: true});
         
+        // Очистка интервала при паузе
+        video.addEventListener('pause', function() {
+            if (skipInterval) {
+                clearInterval(skipInterval);
+                skipInterval = null;
+            }
+        });
+        
+        // Возобновление FrameSkip при продолжении воспроизведения
+        video.addEventListener('play', function() {
+            if (isIOS6 && targetSpeed > 2.0) {
+                setPlaybackRate(targetSpeed);
+            }
+        });
+        
         // Полноэкранное видео при двойном клике
         video.addEventListener('dblclick', function() {
             if (video.requestFullscreen) {
@@ -261,13 +279,6 @@
                 video.webkitRequestFullscreen();
             } else if (video.mozRequestFullScreen) {
                 video.mozRequestFullScreen();
-            }
-        });
-        
-        // Обработчик воспроизведения/паузы
-        video.addEventListener('play', function() {
-            if (targetSpeed > 2.0 && isIOS6) {
-                startFrameSkipping();
             }
         });
         
@@ -281,6 +292,13 @@
             else if (e.key === ' ') {
                 if (video.paused) video.play();
                 else video.pause();
+            }
+        });
+        
+        // Очистка интервала при закрытии страницы
+        window.addEventListener('beforeunload', function() {
+            if (skipInterval) {
+                clearInterval(skipInterval);
             }
         });
     </script>
