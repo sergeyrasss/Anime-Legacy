@@ -156,8 +156,6 @@
         var isIOS6 = /iP(hone|od|ad).*OS 6_/.test(navigator.userAgent);
         if (isIOS6) {
             document.getElementById('ios6Notice').style.display = 'block';
-            
-            // Исправление для работы сенсорных событий на iOS 6
             document.addEventListener('touchstart', function() {}, true);
         }
         
@@ -168,10 +166,8 @@
         
         // Переменные для управления скоростью
         var targetSpeed = 1.0;
-        var frameSkipRate = 0;
-        var frameSkipCounter = 0;
-        var lastUpdate = 0;
         var skipInterval = null;
+        var lastTime = 0;
         
         // Функция для установки скорости
         function setPlaybackRate(rate) {
@@ -181,59 +177,62 @@
             // Обновляем активную кнопку
             for (var i = 0; i < speedButtons.length; i++) {
                 var btn = speedButtons[i];
-                if (parseFloat(btn.dataset.speed) === targetSpeed) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                btn.classList.toggle('active', parseFloat(btn.dataset.speed) === targetSpeed);
             }
             
-            // На iOS 6 используем кастомное ускорение для скоростей выше 2x
+            // Для iOS 6 и скоростей выше 2x используем FrameSkip
             if (isIOS6 && targetSpeed > 2.0) {
-                // Устанавливаем базовую скорость 2x
                 video.playbackRate = 2.0;
-                
-                // Очищаем предыдущий интервал
-                if (skipInterval) {
-                    clearInterval(skipInterval);
-                    skipInterval = null;
-                }
-                
-                // Рассчитываем параметры FrameSkip
-                var skipRatio = targetSpeed / 2.0 - 1;
-                var skipIntervalTime = 100; // Интервал в мс
-                
-                // Создаем новый интервал для пропуска кадров
-                skipInterval = setInterval(function() {
-                    if (!video.paused) {
-                        // Пропускаем кадры пропорционально требуемой скорости
-                        video.currentTime += (skipRatio * skipIntervalTime / 1000);
-                    }
-                }, skipIntervalTime);
-                
+                startFrameSkipping(targetSpeed);
             } else {
-                // Для нормальных браузеров и скоростей <=2x
                 video.playbackRate = targetSpeed;
-                
-                // Очищаем интервал FrameSkip, если он был
-                if (skipInterval) {
-                    clearInterval(skipInterval);
-                    skipInterval = null;
-                }
+                stopFrameSkipping();
             }
         }
         
-        // Улучшенные обработчики для кнопок скорости
+        // Запуск FrameSkip
+        function startFrameSkipping(speed) {
+            stopFrameSkipping();
+            
+            // Рассчитываем шаг пропуска
+            var skipMultiplier = (speed / 2) - 1;
+            var skipStep = 0.1;
+            var interval = 100; // 100ms
+            
+            lastTime = video.currentTime;
+            
+            skipInterval = setInterval(function() {
+                if (!video.paused) {
+                    // Вычисляем сколько времени прошло с момента последнего обновления
+                    var currentTime = video.currentTime;
+                    var elapsed = currentTime - lastTime;
+                    
+                    // Пропускаем кадры пропорционально требуемой скорости
+                    var skipAmount = skipMultiplier * elapsed;
+                    video.currentTime = currentTime + skipAmount;
+                    
+                    lastTime = currentTime + skipAmount;
+                }
+            }, interval);
+        }
+        
+        // Остановка FrameSkip
+        function stopFrameSkipping() {
+            if (skipInterval) {
+                clearInterval(skipInterval);
+                skipInterval = null;
+            }
+        }
+        
+        // Обработчики кнопок
         function setupButtonHandlers() {
             for (var i = 0; i < speedButtons.length; i++) {
                 var btn = speedButtons[i];
                 
-                // Для современных браузеров
                 btn.addEventListener('click', function() {
                     setPlaybackRate(this.dataset.speed);
                 });
                 
-                // Для iOS 6
                 btn.addEventListener('touchstart', function(e) {
                     e.preventDefault();
                     setPlaybackRate(this.dataset.speed);
@@ -247,42 +246,34 @@
             }
         }
         
-        // Инициализация обработчиков кнопок
+        // Инициализация
         setupButtonHandlers();
         
-        // Автозапуск при загрузке для iOS
+        // Автозапуск при загрузке
         document.body.addEventListener('touchend', function initPlay() {
             video.play().catch(function(e) { console.log(e); });
             document.body.removeEventListener('touchend', initPlay);
         }, {once: true});
         
-        // Очистка интервала при паузе
-        video.addEventListener('pause', function() {
-            if (skipInterval) {
-                clearInterval(skipInterval);
-                skipInterval = null;
-            }
-        });
-        
-        // Возобновление FrameSkip при продолжении воспроизведения
+        // Обработчики событий видео
+        video.addEventListener('pause', stopFrameSkipping);
         video.addEventListener('play', function() {
             if (isIOS6 && targetSpeed > 2.0) {
-                setPlaybackRate(targetSpeed);
+                startFrameSkipping(targetSpeed);
             }
         });
         
-        // Полноэкранное видео при двойном клике
+        // Очистка при закрытии
+        window.addEventListener('beforeunload', stopFrameSkipping);
+        
+        // Полноэкранный режим
         video.addEventListener('dblclick', function() {
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.webkitRequestFullscreen) {
-                video.webkitRequestFullscreen();
-            } else if (video.mozRequestFullScreen) {
-                video.mozRequestFullScreen();
-            }
+            if (video.requestFullscreen) video.requestFullscreen();
+            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+            else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
         });
         
-        // Горячие клавиши для скорости
+        // Горячие клавиши
         document.addEventListener('keydown', function(e) {
             if (e.key === '1') setPlaybackRate(1);
             else if (e.key === '2') setPlaybackRate(2);
@@ -290,15 +281,7 @@
             else if (e.key === '4') setPlaybackRate(4);
             else if (e.key === '5') setPlaybackRate(5);
             else if (e.key === ' ') {
-                if (video.paused) video.play();
-                else video.pause();
-            }
-        });
-        
-        // Очистка интервала при закрытии страницы
-        window.addEventListener('beforeunload', function() {
-            if (skipInterval) {
-                clearInterval(skipInterval);
+                video.paused ? video.play() : video.pause();
             }
         });
     </script>
