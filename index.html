@@ -48,7 +48,7 @@
             border: none;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            margin: 20px auto 0; /* Центрирование кнопки */
+            margin: 20px auto 0;
         }
         .title {
             color: #fff;
@@ -81,9 +81,10 @@
             align-items: center;
             box-shadow: 0 3px 10px rgba(0,0,0,0.5);
             transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent; /* Убираем подсветку при тапе */
-            -webkit-user-select: none; /* Запрет выделения текста */
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
             user-select: none;
+            -webkit-touch-callout: none;
         }
         .speed-btn.active {
             background: #e74c3c;
@@ -141,7 +142,6 @@
         <div class="speed-display" id="currentSpeed">Скорость: 1.0x</div>
         <div class="speed-controls">
             <button class="speed-btn active" data-speed="1">1x</button>
-            <!-- Убрана кнопка 1.5x -->
             <button class="speed-btn" data-speed="2">2x</button>
             <button class="speed-btn" data-speed="3">3x</button>
             <button class="speed-btn" data-speed="4">4x</button>
@@ -157,8 +157,8 @@
         if (isIOS6) {
             document.getElementById('ios6Notice').style.display = 'block';
             
-            // Добавляем обработчики для тач-событий на iOS6
-            document.addEventListener('touchstart', function() {}, false);
+            // Исправление для работы сенсорных событий на iOS 6
+            document.addEventListener('touchstart', function() {}, true);
         }
         
         // Элементы управления
@@ -175,16 +175,17 @@
         // Функция для установки скорости
         function setPlaybackRate(rate) {
             targetSpeed = parseFloat(rate);
-            currentSpeed.textContent = `Скорость: ${targetSpeed.toFixed(1)}x`;
+            currentSpeed.textContent = 'Скорость: ' + targetSpeed.toFixed(1) + 'x';
             
             // Обновляем активную кнопку
-            speedButtons.forEach(btn => {
+            for (var i = 0; i < speedButtons.length; i++) {
+                var btn = speedButtons[i];
                 if (parseFloat(btn.dataset.speed) === targetSpeed) {
                     btn.classList.add('active');
                 } else {
                     btn.classList.remove('active');
                 }
-            });
+            }
             
             // На iOS 6 используем кастомное ускорение для скоростей выше 2x
             if (isIOS6 && targetSpeed > 2.0) {
@@ -219,22 +220,36 @@
             }
         }
         
-        // Обработчики кнопок скорости
-        speedButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                setPlaybackRate(this.dataset.speed);
-            });
-            
-            // Добавляем обработчики для тач-событий
-            btn.addEventListener('touchstart', function(e) {
-                e.preventDefault(); // Предотвращаем стандартное поведение
-                setPlaybackRate(this.dataset.speed);
-            });
-        });
+        // Улучшенные обработчики для кнопок скорости
+        function setupButtonHandlers() {
+            for (var i = 0; i < speedButtons.length; i++) {
+                var btn = speedButtons[i];
+                
+                // Для современных браузеров
+                btn.addEventListener('click', function() {
+                    setPlaybackRate(this.dataset.speed);
+                });
+                
+                // Для iOS 6
+                btn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    setPlaybackRate(this.dataset.speed);
+                    this.classList.add('active');
+                });
+                
+                btn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('active');
+                });
+            }
+        }
+        
+        // Инициализация обработчиков кнопок
+        setupButtonHandlers();
         
         // Автозапуск при загрузке для iOS
         document.body.addEventListener('touchend', function initPlay() {
-            video.play().catch(e => console.log(e));
+            video.play().catch(function(e) { console.log(e); });
             document.body.removeEventListener('touchend', initPlay);
         }, {once: true});
         
