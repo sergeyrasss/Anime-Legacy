@@ -10,39 +10,33 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-text-size-adjust: 100%;
-            -webkit-tap-highlight-color: transparent;
         }
         body {
             font-family: Helvetica, Arial, sans-serif;
-            background: #1a1a1a;
-            color: #eee;
-            line-height: 1.6;
-            padding: 15px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        header {
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.5;
+            padding: 20px;
             text-align: center;
-            padding: 20px 0;
-            background: #2c3e50;
-            border-radius: 10px;
-            margin-bottom: 20px;
         }
         h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #fff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            font-size: 24px;
+            margin: 15px 0;
+            color: #2c3e50;
         }
         .player-container {
-            background: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px 0;
             position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            max-width: 640px;
+            margin: 20px auto;
+            background: #000;
+            border-radius: 5px;
+            overflow: hidden;
         }
-        .player-overlay {
+        #videoPlayer {
+            width: 100%;
+            display: block;
+        }
+        .play-btn-container {
             position: absolute;
             top: 0;
             left: 0;
@@ -51,23 +45,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.5);
             z-index: 10;
-            cursor: pointer;
         }
         .play-btn {
             width: 80px;
             height: 80px;
-            background: rgba(52, 152, 219, 0.8);
+            background: rgba(52, 152, 219, 0.9);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             border: 4px solid white;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            transition: all 0.3s;
         }
-        .play-btn:before {
+        .play-btn::before {
             content: "";
             display: block;
             width: 0;
@@ -77,232 +69,142 @@
             border-left: 30px solid white;
             margin-left: 10px;
         }
-        .play-btn:active {
-            transform: scale(0.95);
-            background: rgba(41, 128, 185, 0.9);
-        }
-        .player {
-            width: 100%;
-            display: block;
-        }
-        .video-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 15px 0 10px;
-            padding: 0 10px;
-            color: #fff;
-        }
-        .video-description {
-            padding: 0 10px 15px;
-            color: #ccc;
-        }
-        .video-list {
-            margin-top: 30px;
-        }
-        .video-item {
-            background: #2c3e50;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-        }
-        .video-thumb {
-            position: relative;
-            height: 150px;
-            background-size: cover;
-            background-position: center;
-        }
-        .video-thumb-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .small-play-btn {
-            width: 50px;
-            height: 50px;
-            background: rgba(52, 152, 219, 0.8);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 3px solid white;
-        }
-        .small-play-btn:before {
-            content: "";
-            display: block;
-            width: 0;
-            height: 0;
-            border-top: 12px solid transparent;
-            border-bottom: 12px solid transparent;
-            border-left: 18px solid white;
-            margin-left: 6px;
-        }
-        .video-info {
+        .ios6-warning {
+            background: #f8d7da;
+            color: #721c24;
             padding: 15px;
-        }
-        .video-item-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #fff;
+            border-radius: 5px;
+            margin: 20px auto;
+            max-width: 600px;
+            display: none;
         }
         .download-btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 12px 25px;
             background: #3498db;
             color: white;
             text-decoration: none;
-            border-radius: 30px;
+            border-radius: 5px;
             font-weight: bold;
-            transition: background 0.3s;
-            margin-top: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        .controls {
+            max-width: 640px;
+            margin: 20px auto;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+        }
+        .speed-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .speed-btn {
+            width: 50px;
+            height: 50px;
+            background: #3498db;
+            color: white;
             border: none;
-            font-size: 16px;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
         }
-        .download-btn:active {
-            background: #2980b9;
-            transform: translateY(2px);
-        }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #7f8c8d;
-            font-size: 14px;
-            padding: 20px;
-        }
-        
-        /* iOS 6 specific */
-        .ios6 .player-overlay {
-            background: rgba(0,0,0,0.9);
-        }
-        .ios6 .play-btn {
-            width: 100px;
-            height: 100px;
+        .current-speed {
+            font-weight: bold;
+            font-size: 20px;
+            min-width: 60px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Видео для iOS 6</h1>
-        <p>Оптимизированные видеофайлы с крупными элементами управления</p>
-    </header>
-
-    <div class="video-item">
-        <div class="video-thumb" style="background-image: url('https://placehold.co/600x400/2c3e50/fff?text=Preview');">
-            <div class="video-thumb-overlay">
-                <div class="small-play-btn"></div>
-            </div>
-        </div>
-        <div class="video-info">
-            <div class="video-item-title">Основное видео</div>
-            <p>Нажмите на большую кнопку Play ниже для воспроизведения</p>
-            <button class="download-btn">Скачать видео</button>
-        </div>
+    <h1>Видеоплеер для iOS 6</h1>
+    
+    <div class="ios6-warning">
+        ⚠️ Для лучшей работы на iOS 6 используйте кнопку Play ниже и скачивание при проблемах
     </div>
-
+    
     <div class="player-container">
-        <div class="player-overlay">
-            <div class="play-btn" id="mainPlayBtn"></div>
-        </div>
-        <video id="mainVideo" class="player" controls playsinline>
+        <video id="videoPlayer" controls playsinline>
             <source src="video.mp4" type="video/mp4">
             Ваш браузер не поддерживает видео.
         </video>
-    </div>
-
-    <div class="video-info">
-        <div class="video-title">Основное видео</div>
-        <div class="video-description">Описание вашего видео. Для воспроизведения нажмите на большую кнопку Play в центре экрана.</div>
-    </div>
-
-    <div class="video-list">
-        <h2 style="text-align:center; margin-bottom:20px;">Другие видео</h2>
-        
-        <div class="video-item">
-            <div class="video-thumb" style="background-image: url('https://placehold.co/600x400/3498db/fff?text=Video+1');">
-                <div class="video-thumb-overlay">
-                    <div class="small-play-btn"></div>
-                </div>
-            </div>
-            <div class="video-info">
-                <div class="video-item-title">Видео 1</div>
-                <button class="download-btn">Скачать</button>
-            </div>
-        </div>
-        
-        <div class="video-item">
-            <div class="video-thumb" style="background-image: url('https://placehold.co/600x400/e74c3c/fff?text=Video+2');">
-                <div class="video-thumb-overlay">
-                    <div class="small-play-btn"></div>
-                </div>
-            </div>
-            <div class="video-info">
-                <div class="video-item-title">Видео 2</div>
-                <button class="download-btn">Скачать</button>
-            </div>
+        <div class="play-btn-container">
+            <div class="play-btn" id="playButton"></div>
         </div>
     </div>
-
-    <footer>
-        <p>Специально оптимизировано для iOS 6 и современных устройств</p>
-    </footer>
+    
+    <a href="video.mp4" class="download-btn">Скачать видео</a>
+    
+    <div class="controls">
+        <div class="speed-control">
+            <button class="speed-btn" id="decreaseSpeed">-</button>
+            <span class="current-speed" id="currentSpeed">1.0x</span>
+            <button class="speed-btn" id="increaseSpeed">+</button>
+        </div>
+    </div>
 
     <script>
         // Определяем iOS 6
         var isIOS6 = /iP(hone|od|ad).*OS 6_/.test(navigator.userAgent);
         if (isIOS6) {
-            document.body.classList.add('ios6');
+            document.querySelector('.ios6-warning').style.display = 'block';
             console.log("iOS 6 detected");
         }
         
-        // Основные элементы
-        var mainVideo = document.getElementById('mainVideo');
-        var mainPlayBtn = document.getElementById('mainPlayBtn');
-        var playerOverlay = document.querySelector('.player-overlay');
+        var video = document.getElementById('videoPlayer');
+        var playButton = document.getElementById('playButton');
+        var playButtonContainer = document.querySelector('.play-btn-container');
+        var currentSpeed = document.getElementById('currentSpeed');
+        var decreaseBtn = document.getElementById('decreaseSpeed');
+        var increaseBtn = document.getElementById('increaseSpeed');
         
-        // Обработчики для основной кнопки Play
-        mainPlayBtn.addEventListener('click', function() {
-            mainVideo.play();
-            playerOverlay.style.display = 'none';
+        // Большая кнопка Play
+        playButton.addEventListener('click', function() {
+            video.play();
+            playButtonContainer.style.display = 'none';
         });
         
-        // При паузе видео показываем кнопку снова
-        mainVideo.addEventListener('pause', function() {
-            playerOverlay.style.display = 'flex';
+        // Показываем кнопку при паузе
+        video.addEventListener('pause', function() {
+            playButtonContainer.style.display = 'flex';
         });
         
-        // Обработчики для миниатюр видео
-        var thumbnails = document.querySelectorAll('.video-thumb-overlay');
-        thumbnails.forEach(function(thumb) {
-            thumb.addEventListener('click', function() {
-                // В реальном приложении здесь будет переход к видео
-                alert("Видео будет открыто. В реальной реализации добавьте обработку конкретного видео.");
-            });
+        // Скрываем кнопку при воспроизведении
+        video.addEventListener('play', function() {
+            playButtonContainer.style.display = 'none';
         });
         
-        // Обработчики для кнопок скачивания
-        var downloadBtns = document.querySelectorAll('.download-btn');
-        downloadBtns.forEach(function(btn, index) {
-            btn.addEventListener('click', function() {
-                var fileName = index === 0 ? 'video.mp4' : 'video' + index + '.mp4';
-                window.location.href = fileName;
-            });
-        });
-        
-        // Автоопределение возможностей видео
-        mainVideo.addEventListener('error', function() {
-            if (mainVideo.error && isIOS6) {
-                alert("Ваше устройство не может воспроизвести это видео напрямую. Используйте кнопку скачивания.");
+        // Управление скоростью
+        function setPlaybackRate(rate) {
+            // Ограничения для iOS 6
+            if(isIOS6) {
+                rate = Math.max(0.5, Math.min(2.0, rate));
             }
+            video.playbackRate = rate;
+            currentSpeed.textContent = rate.toFixed(1) + 'x';
+        }
+        
+        decreaseBtn.addEventListener('click', function() {
+            setPlaybackRate(video.playbackRate - 0.1);
         });
+        
+        increaseBtn.addEventListener('click', function() {
+            setPlaybackRate(video.playbackRate + 0.1);
+        });
+        
+        // Инициализация скорости
+        setPlaybackRate(1.0);
+        
+        // Автозапуск при касании для iOS
+        document.body.addEventListener('touchend', function initPlay() {
+            video.play().catch(e => console.log(e));
+            document.body.removeEventListener('touchend', initPlay);
+        }, {once: true});
     </script>
 </body>
 </html>
