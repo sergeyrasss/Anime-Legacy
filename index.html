@@ -48,7 +48,7 @@
             border: none;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            margin-top: 20px;
+            margin: 20px auto 0; /* Центрирование кнопки */
         }
         .title {
             color: #fff;
@@ -81,6 +81,9 @@
             align-items: center;
             box-shadow: 0 3px 10px rgba(0,0,0,0.5);
             transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent; /* Убираем подсветку при тапе */
+            -webkit-user-select: none; /* Запрет выделения текста */
+            user-select: none;
         }
         .speed-btn.active {
             background: #e74c3c;
@@ -138,7 +141,7 @@
         <div class="speed-display" id="currentSpeed">Скорость: 1.0x</div>
         <div class="speed-controls">
             <button class="speed-btn active" data-speed="1">1x</button>
-            <button class="speed-btn" data-speed="1.5">1.5x</button>
+            <!-- Убрана кнопка 1.5x -->
             <button class="speed-btn" data-speed="2">2x</button>
             <button class="speed-btn" data-speed="3">3x</button>
             <button class="speed-btn" data-speed="4">4x</button>
@@ -153,6 +156,9 @@
         var isIOS6 = /iP(hone|od|ad).*OS 6_/.test(navigator.userAgent);
         if (isIOS6) {
             document.getElementById('ios6Notice').style.display = 'block';
+            
+            // Добавляем обработчики для тач-событий на iOS6
+            document.addEventListener('touchstart', function() {}, false);
         }
         
         // Элементы управления
@@ -216,6 +222,12 @@
         // Обработчики кнопок скорости
         speedButtons.forEach(btn => {
             btn.addEventListener('click', function() {
+                setPlaybackRate(this.dataset.speed);
+            });
+            
+            // Добавляем обработчики для тач-событий
+            btn.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // Предотвращаем стандартное поведение
                 setPlaybackRate(this.dataset.speed);
             });
         });
