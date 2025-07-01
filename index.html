@@ -3,208 +3,114 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Видео для iOS 6</title>
+    <title>Видеоплеер</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-text-size-adjust: 100%;
         }
         body {
-            font-family: Helvetica, Arial, sans-serif;
-            background: #f0f0f0;
-            color: #333;
-            line-height: 1.5;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 24px;
-            margin: 15px 0;
-            color: #2c3e50;
-        }
-        .player-container {
-            position: relative;
-            max-width: 640px;
-            margin: 20px auto;
             background: #000;
-            border-radius: 5px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: Helvetica, Arial, sans-serif;
             overflow: hidden;
+        }
+        .video-container {
+            width: 95%;
+            max-width: 800px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(200, 0, 0, 0.5);
+            margin-bottom: 40px;
         }
         #videoPlayer {
             width: 100%;
             display: block;
+            background: #000;
         }
-        .play-btn-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0,0,0,0.5);
-            z-index: 10;
-        }
-        .play-btn {
-            width: 80px;
-            height: 80px;
-            background: rgba(52, 152, 219, 0.9);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 4px solid white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        }
-        .play-btn::before {
-            content: "";
+        .home-button {
             display: block;
-            width: 0;
-            height: 0;
-            border-top: 20px solid transparent;
-            border-bottom: 20px solid transparent;
-            border-left: 30px solid white;
-            margin-left: 10px;
-        }
-        .ios6-warning {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px auto;
-            max-width: 600px;
-            display: none;
-        }
-        .download-btn {
-            display: inline-block;
-            padding: 12px 25px;
-            background: #3498db;
+            width: 300px;
+            max-width: 90%;
+            padding: 25px 0;
+            background: #e74c3c;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            text-align: center;
+            font-size: 28px;
             font-weight: bold;
-            margin: 20px 0;
-            font-size: 18px;
-        }
-        .controls {
-            max-width: 640px;
-            margin: 20px auto;
-            padding: 15px;
-            background: white;
-            border-radius: 5px;
-        }
-        .speed-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin: 15px 0;
-        }
-        .speed-btn {
-            width: 50px;
-            height: 50px;
-            background: #3498db;
-            color: white;
+            border-radius: 50px;
             border: none;
-            border-radius: 50%;
-            font-size: 24px;
-            font-weight: bold;
             cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
         }
-        .current-speed {
-            font-weight: bold;
-            font-size: 20px;
-            min-width: 60px;
+        .home-button:after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(25deg);
+            transition: all 0.5s;
+        }
+        .home-button:hover:after {
+            left: 120%;
+        }
+        .home-button:active {
+            transform: scale(0.95);
+            background: #c0392b;
+        }
+        .title {
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
         }
     </style>
 </head>
 <body>
-    <h1>Видеоплеер для iOS 6</h1>
+    <div class="title">Видео контент</div>
     
-    <div class="ios6-warning">
-        ⚠️ Для лучшей работы на iOS 6 используйте кнопку Play ниже и скачивание при проблемах
-    </div>
-    
-    <div class="player-container">
+    <div class="video-container">
         <video id="videoPlayer" controls playsinline>
             <source src="video.mp4" type="video/mp4">
             Ваш браузер не поддерживает видео.
         </video>
-        <div class="play-btn-container">
-            <div class="play-btn" id="playButton"></div>
-        </div>
     </div>
     
-    <a href="video.mp4" class="download-btn">Скачать видео</a>
-    
-    <div class="controls">
-        <div class="speed-control">
-            <button class="speed-btn" id="decreaseSpeed">-</button>
-            <span class="current-speed" id="currentSpeed">1.0x</span>
-            <button class="speed-btn" id="increaseSpeed">+</button>
-        </div>
-    </div>
+    <a href="index.html" class="home-button">На главную</a>
 
     <script>
-        // Определяем iOS 6
-        var isIOS6 = /iP(hone|od|ad).*OS 6_/.test(navigator.userAgent);
-        if (isIOS6) {
-            document.querySelector('.ios6-warning').style.display = 'block';
-            console.log("iOS 6 detected");
-        }
-        
-        var video = document.getElementById('videoPlayer');
-        var playButton = document.getElementById('playButton');
-        var playButtonContainer = document.querySelector('.play-btn-container');
-        var currentSpeed = document.getElementById('currentSpeed');
-        var decreaseBtn = document.getElementById('decreaseSpeed');
-        var increaseBtn = document.getElementById('increaseSpeed');
-        
-        // Большая кнопка Play
-        playButton.addEventListener('click', function() {
-            video.play();
-            playButtonContainer.style.display = 'none';
-        });
-        
-        // Показываем кнопку при паузе
-        video.addEventListener('pause', function() {
-            playButtonContainer.style.display = 'flex';
-        });
-        
-        // Скрываем кнопку при воспроизведении
-        video.addEventListener('play', function() {
-            playButtonContainer.style.display = 'none';
-        });
-        
-        // Управление скоростью
-        function setPlaybackRate(rate) {
-            // Ограничения для iOS 6
-            if(isIOS6) {
-                rate = Math.max(0.5, Math.min(2.0, rate));
-            }
-            video.playbackRate = rate;
-            currentSpeed.textContent = rate.toFixed(1) + 'x';
-        }
-        
-        decreaseBtn.addEventListener('click', function() {
-            setPlaybackRate(video.playbackRate - 0.1);
-        });
-        
-        increaseBtn.addEventListener('click', function() {
-            setPlaybackRate(video.playbackRate + 0.1);
-        });
-        
-        // Инициализация скорости
-        setPlaybackRate(1.0);
-        
-        // Автозапуск при касании для iOS
+        // Автозапуск при загрузке для iOS
         document.body.addEventListener('touchend', function initPlay() {
+            var video = document.getElementById('videoPlayer');
             video.play().catch(e => console.log(e));
             document.body.removeEventListener('touchend', initPlay);
         }, {once: true});
+        
+        // Полноэкранное видео при двойном клике
+        var video = document.getElementById('videoPlayer');
+        video.addEventListener('dblclick', function() {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.mozRequestFullScreen) {
+                video.mozRequestFullScreen();
+            }
+        });
     </script>
 </body>
 </html>
